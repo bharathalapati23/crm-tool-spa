@@ -91,14 +91,20 @@ const MoreInfoPage = () => {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
-  console.log(location.state.enquiry);
   const [newComment, setNewComment] = React.useState("");
   const [budgetState, setBudgetState] = React.useState("");
   const [configState, setConfigState] = React.useState("");
-  const [locationState, setLocationState] = React.useState("");
+  const [locationState, setLocationState] = React.useState([]);
   const [assignedState, setAssignedState] = React.useState("");
   const [statusState, setStatusState] = React.useState("");
   const [subStatusState, setSubStatusState] = React.useState("");
+  const [subStatusComment, setSubStatusComment] = React.useState("");
+  const [statusComment, setStatusComment] = React.useState("");
+  const [assignedComment, setAssignedComment] = React.useState("");
+
+  let inStatus = location.state.enquiry.status;
+  let inAssigned = location.state.enquiry.assignedTo;
+  let inSubStatus = location.state.enquiry.subStatus;
 
   React.useEffect(() => {
     setBudgetState(location.state.enquiry.budget);
@@ -122,31 +128,39 @@ const MoreInfoPage = () => {
   };
 
   const changeLocation = (e) => {
-    setLocationState(e.target.value);
+    const {
+      target: { value },
+    } = e;
+    console.log(value);
+    setLocationState(value);
   };
 
   const changeAssigned = (e) => {
-    setNewComment(
-      `${newComment} Assigned [ ${assignedState} -> ${e.target.value} ]`
-    );
     setAssignedState(e.target.value);
+    setAssignedComment(`Assigned [ ${inAssigned} -> ${e.target.value} ]`);
+    setNewComment(
+      `${statusComment} ${subStatusComment} Assigned [ ${inAssigned} -> ${e.target.value} ]`
+    );
   };
 
   const changeStatus = (e) => {
-    setNewComment(
-      `${newComment} Status [ ${statusState} -> ${e.target.value} ]`
-    );
     setStatusState(e.target.value);
+    setStatusComment(`Status [ ${inStatus} -> ${e.target.value} ]`);
+    setNewComment(
+      `Status [ ${inStatus} -> ${e.target.value} ] ${subStatusComment} ${assignedComment}`
+    );
   };
 
   const changeSubStatus = (e) => {
-    setNewComment(
-      `${newComment}, SubStatus [ ${subStatusState} -> ${e.target.value} ]`
-    );
     setSubStatusState(e.target.value);
+    setSubStatusComment(`SubStatus [ ${inSubStatus} -> ${e.target.value} ]`);
+    setNewComment(
+      `${statusComment} SubStatus [ ${inSubStatus} -> ${e.target.value} ] ${assignedComment}`
+    );
   };
 
   const submitComment = (e) => {
+    console.log(newComment);
     const commentBody = {
       comment: newComment,
       updated: Date.now(),
@@ -336,7 +350,7 @@ const MoreInfoPage = () => {
         />
         <PreferencesComponent
           budget={budgetState}
-          config={configState}
+          configuration={configState}
           location={locationState}
           changeBudget={changeBudget}
           changeConfig={changeConfig}
