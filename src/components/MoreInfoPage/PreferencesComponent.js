@@ -1,43 +1,111 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField'
+import React from "react";
+import { makeStyles, createTheme } from "@material-ui/core/styles";
+import {
+  TextField,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+} from "@material-ui/core";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import ZoneSelect from "./ZoneSelect";
+
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 768,
+      lg: 992,
+      xl: 1200,
+    },
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        marginTop: '30px',
-        display: 'flex',
-        flexDirection: 'column'
-    },
+  root: {
+    marginTop: "30px",
+    display: "flex",
+    flexDirection: "column",
+  },
+  field: {
+    marginTop: "1vh",
+    marginBottom: "1vh",
+  },
 }));
 
-const PreferencesComponent = ({ budget, config, location, changeBudget, changeConfig, changeLocation }) => {
-    const classes = useStyles()
+const locations = [
+  "Eshwar Nagar",
+  "Ananth Nagar",
+  "Syndicate Circle",
+  "End Point Road",
+  "Coin Circle",
+];
 
+const PreferencesComponent = ({
+  budget,
+  configuration,
+  location,
+  changeBudget,
+  changeConfig,
+  changeLocation,
+}) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <Typography
+        variant="h7"
+        style={{ fontWeight: "bolder", marginBottom: "1vh" }}
+      >
+        PREFERENCES
+      </Typography>
+      <TextField
+        label="Budget"
+        variant="filled"
+        value={budget}
+        className={classes.field}
+        onChange={changeBudget}
+      />
 
+      <FormControl
+        variant="filled"
+        sx={{ minWidth: 140 }}
+        className={classes.field}
+      >
+        <InputLabel>Configuration</InputLabel>
+        <Select value={configuration} onChange={changeConfig}>
+          <MenuItem value={"1 BHK"}>&nbsp; 1 BHK</MenuItem>
+          <MenuItem value={"2 BHK"}>&nbsp; 2 BHK</MenuItem>
+          <MenuItem value={"3 BHK"}>&nbsp; 3 BHK</MenuItem>
+        </Select>
+      </FormControl>
 
+      {/* <ZoneSelect
+        // className={classes.field}
+        location={location}
+        changeLocation={changeLocation}
+      /> */}
+      <FormControl
+        variant="filled"
+        sx={{ minWidth: 140 }}
+        className={classes.field}
+      >
+        <InputLabel>Location</InputLabel>
+        <Select multiple={true} value={location} onChange={changeLocation}>
+          {locations.map((loc) => (
+            <MenuItem
+              key={loc}
+              value={loc}
+              // style={getStyles(name, location, theme)}
+            >
+              &nbsp; {loc}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
+  );
+};
 
-    return (
-        <div className={classes.root}>
-            <div style={{ fontWeight: 'bolder' }}>
-                PREFERENCES
-            </div>
-            <div>
-                Budget :
-                <TextField value={budget} onChange={changeBudget} />
-            </div>
-
-            <div>
-                Configuration
-                <TextField value={config} onChange={changeConfig} />
-            </div>
-
-            <div>
-                Location
-                <TextField value={location} onChange={changeLocation} />
-            </div>
-
-        </div>
-    )
-}
-
-export default PreferencesComponent
+export default PreferencesComponent;
