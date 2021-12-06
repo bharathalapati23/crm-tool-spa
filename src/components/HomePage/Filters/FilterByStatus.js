@@ -2,19 +2,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { FormControl, Select } from "@mui/material";
 import FilterListOutlinedIcon from "@mui/icons-material/FilterListOutlined";
-import { makeStyles, createTheme } from "@material-ui/core/styles";
-
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-    },
-  },
-});
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {

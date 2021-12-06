@@ -1,19 +1,7 @@
 import React from "react";
-import ByAssined from "./ByAssined";
-import ByStatus from "./ByStatus";
-import { makeStyles, createTheme } from "@material-ui/core/styles";
-
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-    },
-  },
-});
+import ByAssigned from "./FilterByAssigned";
+import ByStatus from "./FilterByStatus";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +39,7 @@ export default function Filters({
   return (
     <div className={classes.root}>
       <div className={classes.filters}>
-        <ByAssined
+        <ByAssigned
           assigned={assigned}
           handleAssignedChange={handleAssignedChange}
         />

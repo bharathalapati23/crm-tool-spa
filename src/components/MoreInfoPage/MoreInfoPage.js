@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, createTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { useLocation, useHistory } from "react-router-dom";
 import {
   FormControl,
@@ -12,18 +12,6 @@ import {
 } from "@material-ui/core";
 import * as api from "../../api";
 import PreferencesComponent from "./PreferencesComponent";
-
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,10 +93,22 @@ const MoreInfoPage = () => {
   let inStatus = location.state.enquiry.status;
   let inAssigned = location.state.enquiry.assignedTo;
   let inSubStatus = location.state.enquiry.subStatus;
+  const map = new Map([
+    ["Enquired", ""],
+    ["Connected", "Collecting Info"],
+    ["Qualified", ""],
+    ["Viewing", "Payment Pending"],
+    ["Closed", "Collecting Feedback"],
+    ["Dropped", "Collecting Feedback"],
+  ]);
 
   React.useEffect(() => {
     setBudgetState(location.state.enquiry.budget);
-    setConfigState(location.state.enquiry.config);
+    setConfigState(
+      location.state.enquiry.config !== ""
+        ? location.state.enquiry.config
+        : "1 BHK"
+    );
     setLocationState(location.state.enquiry.location);
     setAssignedState(location.state.enquiry.assignedTo);
     setStatusState(location.state.enquiry.status);
@@ -137,30 +137,62 @@ const MoreInfoPage = () => {
 
   const changeAssigned = (e) => {
     setAssignedState(e.target.value);
-    setAssignedComment(`Assigned [ ${inAssigned} -> ${e.target.value} ]`);
-    setNewComment(
-      `${statusComment} ${subStatusComment} Assigned [ ${inAssigned} -> ${e.target.value} ]`
-    );
+    if (inAssigned !== e.target.value) {
+      setAssignedComment(`Assigned [ ${inAssigned} -> ${e.target.value} ]`);
+      setNewComment(
+        `${statusComment} ${subStatusComment} Assigned [ ${inAssigned} -> ${e.target.value} ]`
+      );
+    } else {
+      setAssignedComment("");
+      setNewComment(`${statusComment} ${subStatusComment}`);
+    }
   };
 
   const changeStatus = (e) => {
     setStatusState(e.target.value);
-    setStatusComment(`Status [ ${inStatus} -> ${e.target.value} ]`);
-    setNewComment(
-      `Status [ ${inStatus} -> ${e.target.value} ] ${subStatusComment} ${assignedComment}`
-    );
+    if (inStatus !== e.target.value) {
+      setStatusComment(`Status [ ${inStatus} -> ${e.target.value} ]`);
+      setSubStatusState(map.get(e.target.value));
+      if (
+        inSubStatus !== map.get(e.target.value) &&
+        map.get(e.target.value) !== ""
+      ) {
+        setSubStatusComment(
+          `SubStatus [ ${inSubStatus} -> ${map.get(e.target.value)} ]`
+        );
+        setNewComment(
+          `Status [ ${inStatus} -> ${
+            e.target.value
+          } ] SubStatus [ ${inSubStatus} -> ${map.get(
+            e.target.value
+          )} ] ${assignedComment}`
+        );
+      } else {
+        setSubStatusComment("");
+        setNewComment(
+          `Status [ ${inStatus} -> ${e.target.value} ] ${assignedComment}`
+        );
+      }
+    } else {
+      setStatusComment("");
+      setNewComment(`${subStatusComment} ${assignedComment}`);
+    }
   };
 
   const changeSubStatus = (e) => {
     setSubStatusState(e.target.value);
-    setSubStatusComment(`SubStatus [ ${inSubStatus} -> ${e.target.value} ]`);
-    setNewComment(
-      `${statusComment} SubStatus [ ${inSubStatus} -> ${e.target.value} ] ${assignedComment}`
-    );
+    if (inSubStatus !== e.target.value) {
+      setSubStatusComment(`SubStatus [ ${inSubStatus} -> ${e.target.value} ]`);
+      setNewComment(
+        `${statusComment} SubStatus [ ${inSubStatus} -> ${e.target.value} ] ${assignedComment}`
+      );
+    } else {
+      setSubStatusComment("");
+      setNewComment(`${statusComment} ${assignedComment}`);
+    }
   };
 
   const submitComment = (e) => {
-    console.log(newComment);
     const commentBody = {
       comment: newComment,
       updated: Date.now(),
@@ -172,8 +204,7 @@ const MoreInfoPage = () => {
       assignedTo: assignedState,
       id: location.state.enquiry._id,
     };
-    console.log(commentBody);
-    console.log("sdfsdfsad", budgetState, configState);
+
     api.addComment(commentBody).then(() => {
       if (newComment.length) {
         history.replace({
@@ -275,7 +306,7 @@ const MoreInfoPage = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={subStatusState}
+              value={subStatusState !== "" ? subStatusState : "Collecting Info"}
               onChange={changeSubStatus}
             >
               <MenuItem value={"Collecting Info"}>
@@ -297,7 +328,7 @@ const MoreInfoPage = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={subStatusState}
+              value={subStatusState !== "" ? subStatusState : "Payment Pending"}
               onChange={changeSubStatus}
             >
               <MenuItem value={"Payment Pending"}>
@@ -321,13 +352,15 @@ const MoreInfoPage = () => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={subStatusState}
+              value={
+                subStatusState !== "" ? subStatusState : "Collecting Feedback"
+              }
               onChange={changeSubStatus}
             >
-              <MenuItem value={"Collecting Info"}>
+              <MenuItem value={"Collecting Feedback"}>
                 &nbsp; Collecting Feedback
               </MenuItem>
-              <MenuItem value={"Collected Info"}>
+              <MenuItem value={"Collected Feedback"}>
                 &nbsp; Collected Feedback
               </MenuItem>
             </Select>

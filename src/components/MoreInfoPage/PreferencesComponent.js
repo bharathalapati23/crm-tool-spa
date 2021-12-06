@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, createTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
   Typography,
@@ -8,20 +8,6 @@ import {
   MenuItem,
   InputLabel,
 } from "@material-ui/core";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import ZoneSelect from "./ZoneSelect";
-
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   root: {

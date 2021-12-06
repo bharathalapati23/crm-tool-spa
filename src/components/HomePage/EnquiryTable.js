@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles, createTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -11,18 +11,6 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useHistory } from "react-router-dom";
 import { IconButton } from "@material-ui/core";
 import Filters from "./Filters/Filters";
-
-const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 768,
-      lg: 992,
-      xl: 1200,
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
   root: {
