@@ -104,11 +104,7 @@ const MoreInfoPage = () => {
 
   React.useEffect(() => {
     setBudgetState(location.state.enquiry.budget);
-    setConfigState(
-      location.state.enquiry.config !== ""
-        ? location.state.enquiry.config
-        : "1 BHK"
-    );
+    setConfigState(location.state.enquiry.config);
     setLocationState(location.state.enquiry.location);
     setAssignedState(location.state.enquiry.assignedTo);
     setStatusState(location.state.enquiry.status);
