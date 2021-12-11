@@ -133,6 +133,7 @@ const MoreInfoPage = () => {
 
   const changeAssigned = (e) => {
     setAssignedState(e.target.value);
+    console.log(assignedState + " " + location.state.enquiry.assignedTo);
     if (inAssigned !== e.target.value) {
       setAssignedComment(`Assigned [ ${inAssigned} -> ${e.target.value} ]`);
       setNewComment(
@@ -224,11 +225,14 @@ const MoreInfoPage = () => {
   };
 
   const disableSaveButton =
-    statusState === location.state.enquiry.status
-      ? locationState === location.state.enquiry.location &&
-        budgetState === location.state.enquiry.budget &&
-        configState === location.state.enquiry.config
-      : !newComment.length;
+    assignedState === location.state.enquiry.assignedTo &&
+    statusState === location.state.enquiry.status &&
+    subStatusState === location.state.enquiry.subStatus &&
+    locationState === location.state.enquiry.location &&
+    budgetState === location.state.enquiry.budget &&
+    configState === location.state.enquiry.config &&
+    !newComment.length;
+  console.log(disableSaveButton);
 
   return (
     <div className={classes.root}>
