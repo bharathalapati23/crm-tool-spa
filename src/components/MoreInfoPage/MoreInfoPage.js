@@ -1,5 +1,4 @@
 import React from "react";
-import { google } from "googleapis";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation, useHistory } from "react-router-dom";
 import {
@@ -77,21 +76,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MoreInfoPage = () => {
-  const CLIENT_ID =
-    "580347079106-dvj1lu93ag4403978e0j9g562jv3qp9v.apps.googleusercontent.com";
-  const CLIENT_SECRET = "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";
-  const REDIRECT_URI = "https://developers.google.com/oauthplayground";
-  const REFRESH_TOKEN =
-    "1//04yGv7wz88qSmCgYIARAAGAQSNwF-L9IrOwImhW-Ejpn1-LARHcIasZ5uzVjh4TdALGXBng8oDysVuMVxgdrhqZDpq7yZSGj2muY";
-
-  const oauth2Client = new google.auth.OAuth2(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI
-  );
-
-  oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
