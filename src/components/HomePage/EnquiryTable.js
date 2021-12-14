@@ -56,7 +56,7 @@ const EnquiryTable = ({ enquiries }) => {
     });
   };
 
-  console.log(enquiries);
+  // console.log(enquiries);
 
   return (
     <div className={classes.root}>

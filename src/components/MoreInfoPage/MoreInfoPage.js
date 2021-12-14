@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation, useHistory } from "react-router-dom";
 import {
@@ -12,6 +12,9 @@ import {
 } from "@material-ui/core";
 import * as api from "../../api";
 import PreferencesComponent from "./PreferencesComponent";
+import { app } from "../../base";
+
+const db = app.firestore();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    borderTop: "1.5px solid #403d39",
+    margin: "5px 0px",
   },
   commentsField: {
     marginTop: "1vh",
@@ -101,6 +106,8 @@ const MoreInfoPage = () => {
     ["Closed", "Collecting Feedback"],
     ["Dropped", "Collecting Feedback"],
   ]);
+  const queryParams = new URLSearchParams(window.location.search);
+  const id = queryParams.get("search-id");
 
   React.useEffect(() => {
     setBudgetState(location.state.enquiry.budget);
@@ -232,7 +239,60 @@ const MoreInfoPage = () => {
     budgetState === location.state.enquiry.budget &&
     configState === location.state.enquiry.config &&
     !newComment.length;
-  console.log(disableSaveButton);
+
+  const [fileUrl, setFileUrl] = React.useState(null);
+  const [userData, setUserData] = React.useState([]);
+  const [fileName, setFileName] = React.useState("");
+  console.log(id);
+
+  const onFileChange = async (e) => {
+    const file = e.target.files[0];
+    setFileName(file.name);
+    const storageRef = app.storage().ref();
+    const fileRef = storageRef.child(file.name);
+    await fileRef.put(file);
+    setFileUrl(await fileRef.getDownloadURL());
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const username = id;
+    const name = fileName;
+    console.log(username + " / " + name + " / " + fileUrl);
+    if (!username || !fileUrl) {
+      return;
+    }
+    await db
+      .collection("users")
+      .doc(username)
+      .collection("files")
+      .doc(name)
+      .set({ url: fileUrl, name: name })
+      .then(() => {
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    const username = id;
+    const fetchuserData = async () => {
+      const userDataCollection = await db
+        .collection("users")
+        .doc(username)
+        .collection("files")
+        .get();
+      setUserData(
+        userDataCollection.docs.map((doc) => {
+          return doc.data();
+        })
+      );
+    };
+    fetchuserData();
+  }, []);
+  console.log(userData);
 
   return (
     <div className={classes.root}>
@@ -389,6 +449,34 @@ const MoreInfoPage = () => {
           changeConfig={changeConfig}
           changeLocation={changeLocation}
         />
+        <Typography
+          variant="h7"
+          style={{
+            fontWeight: "bolder",
+            marginBottom: "1vh",
+            marginTop: "4vh",
+          }}
+        >
+          FILES
+        </Typography>
+        <div className={classes.upload}>
+          <form onSubmit={onSubmit}>
+            <input type="file" onChange={onFileChange} />
+            <button>Submit</button>
+          </form>
+          <ul>
+            {userData.map((user) => {
+              console.log(user);
+              return (
+                <li>
+                  <a href={user.url} target="blank">
+                    {user.name}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
         <Typography
           variant="h7"
           style={{
