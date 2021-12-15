@@ -10,6 +10,8 @@ import {
   InputLabel,
   Button,
 } from "@material-ui/core";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import AttachmentIcon from "@mui/icons-material/Attachment";
 import * as api from "../../api";
 import PreferencesComponent from "./PreferencesComponent";
 import { app } from "../../base";
@@ -40,6 +42,36 @@ const useStyles = makeStyles((theme) => ({
   field: {
     marginTop: "1vh",
     marginBottom: "1vh",
+  },
+  upload: {
+    marginTop: "1vh",
+  },
+  uploadRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  uploadInput: {
+    padding: "5px 10px",
+  },
+  submitButton: {
+    fontSize: "13px",
+    fontWeight: "bold",
+    borderRadius: "20px",
+    padding: "3px 10px",
+    letterSpacing: "1px",
+  },
+  filesItem: {
+    listStyleType: "none",
+    marginBottom: "5px",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  file: {
+    textDecoration: "none",
+    marginLeft: "10px",
+    fontWeight: "600",
   },
   comments: {
     display: "flex",
@@ -292,6 +324,7 @@ const MoreInfoPage = () => {
     };
     fetchuserData();
   }, []);
+
   console.log(userData);
 
   return (
@@ -460,16 +493,28 @@ const MoreInfoPage = () => {
           FILES
         </Typography>
         <div className={classes.upload}>
-          <form onSubmit={onSubmit}>
-            <input type="file" onChange={onFileChange} />
-            <button>Submit</button>
+          <form onSubmit={onSubmit} className={classes.uploadRow}>
+            <FileUploadIcon />
+            <input
+              type="file"
+              onChange={onFileChange}
+              className={classes.uploadInput}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.submitButton}
+            >
+              Upload
+            </Button>
           </form>
           <ul>
             {userData.map((user) => {
               console.log(user);
               return (
-                <li>
-                  <a href={user.url} target="blank">
+                <li className={classes.filesItem}>
+                  <AttachmentIcon />
+                  <a href={user.url} target="blank" className={classes.file}>
                     {user.name}
                   </a>
                 </li>
