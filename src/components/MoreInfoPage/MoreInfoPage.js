@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    margin: "10px 0 13px 0",
   },
   uploadInput: {
     padding: "5px 10px",
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "20px",
     padding: "3px 10px",
     letterSpacing: "1px",
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "10px",
+    },
   },
   filesItem: {
     listStyleType: "none",
@@ -67,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "13px",
+    },
   },
   file: {
     textDecoration: "none",
@@ -504,11 +511,12 @@ const MoreInfoPage = () => {
               variant="contained"
               color="primary"
               className={classes.submitButton}
+              type="submit"
             >
               Upload
             </Button>
           </form>
-          <ul>
+          <div>
             {userData.map((user) => {
               console.log(user);
               return (
@@ -520,7 +528,7 @@ const MoreInfoPage = () => {
                 </li>
               );
             })}
-          </ul>
+          </div>
         </div>
         <Typography
           variant="h7"
