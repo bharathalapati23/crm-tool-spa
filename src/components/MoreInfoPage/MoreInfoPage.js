@@ -173,13 +173,11 @@ const MoreInfoPage = () => {
     const {
       target: { value },
     } = e;
-    console.log(value);
     setLocationState(value);
   };
 
   const changeAssigned = (e) => {
     setAssignedState(e.target.value);
-    console.log(assignedState + " " + location.state.enquiry.assignedTo);
     if (inAssigned !== e.target.value) {
       setAssignedComment(`Assigned [ ${inAssigned} -> ${e.target.value} ]`);
       setNewComment(
@@ -282,7 +280,6 @@ const MoreInfoPage = () => {
   const [fileUrl, setFileUrl] = React.useState(null);
   const [userData, setUserData] = React.useState([]);
   const [fileName, setFileName] = React.useState("");
-  console.log(id);
 
   const onFileChange = async (e) => {
     const file = e.target.files[0];
@@ -297,7 +294,6 @@ const MoreInfoPage = () => {
     e.preventDefault();
     const username = id;
     const name = fileName;
-    console.log(username + " / " + name + " / " + fileUrl);
     if (!username || !fileUrl) {
       return;
     }
@@ -332,7 +328,6 @@ const MoreInfoPage = () => {
     fetchuserData();
   }, []);
 
-  console.log(userData);
 
   return (
     <div className={classes.root}>
@@ -518,7 +513,6 @@ const MoreInfoPage = () => {
           </form>
           <div>
             {userData.map((user) => {
-              console.log(user);
               return (
                 <li className={classes.filesItem}>
                   <AttachmentIcon />

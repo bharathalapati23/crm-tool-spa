@@ -4,7 +4,6 @@ const url = "http://localhost:5000/enquiry";
 // const url = "https://crm-tool-backend.herokuapp.com/enquiry";
 
 export const createEnquiry = (newPost) => {
-  console.log(newPost);
   axios.post(url, newPost);
 };
 

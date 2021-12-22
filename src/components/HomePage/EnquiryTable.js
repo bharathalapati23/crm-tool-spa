@@ -56,8 +56,6 @@ const EnquiryTable = ({ enquiries }) => {
     });
   };
 
-  // console.log(enquiries);
-
   return (
     <div className={classes.root}>
       <Filters
@@ -88,6 +86,17 @@ const EnquiryTable = ({ enquiries }) => {
                 align="center"
               >
                 Name
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "18px",
+                  backgroundColor: "#495057",
+                  color: "#ffffff",
+                  fontWeight: "bold",
+                }}
+                align="center"
+              >
+                Assigned To
               </TableCell>
               <TableCell
                 style={{
@@ -145,6 +154,14 @@ const EnquiryTable = ({ enquiries }) => {
                       scope="row"
                     >
                       {row.name}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "15px",
+                      }}
+                      align="center"
+                    >
+                      {row.assignedTo}
                     </TableCell>
                     <TableCell
                       style={{

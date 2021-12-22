@@ -62,7 +62,6 @@ const NewEnquiryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(postData);
     api.createEnquiry(postData);
     setPostData(initialConfig);
   };
