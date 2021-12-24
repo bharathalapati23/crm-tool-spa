@@ -87,13 +87,29 @@ const useStyles = makeStyles((theme) => ({
     borderTop: "1.5px solid #403d39",
     margin: "5px 0px",
   },
+  commentDetails: {
+    display: "flex",
+    flexDirection: "column",
+    width: "30%",
+  },
   commentsField: {
     marginTop: "1vh",
-    marginBottom: "1vh",
-    width: "30%",
+    width: "100%",
     [theme.breakpoints.between("xs", "sm")]: {
       fontSize: "14px",
     },
+  },
+  commentUser: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    alignItems: "center",
+    fontSize: "14px",
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "12px",
+    },
+    // fontStyle: "italic",
+    opacity: "0.6",
   },
   commentList: {
     fontSize: "18px",
@@ -119,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MoreInfoPage = () => {
+const MoreInfoPage = ({ userName }) => {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
@@ -244,6 +260,7 @@ const MoreInfoPage = () => {
       subStatus: subStatusState,
       assignedTo: assignedState,
       id: location.state.enquiry._id,
+      changedBy: userName,
     };
 
     api.addComment(commentBody).then(() => {
@@ -327,7 +344,6 @@ const MoreInfoPage = () => {
     };
     fetchuserData();
   }, []);
-
 
   return (
     <div className={classes.root}>
@@ -540,13 +556,18 @@ const MoreInfoPage = () => {
           .map((comment, i) => {
             return (
               <div className={classes.comments}>
-                <Typography className={classes.commentsField}>
-                  {new Date(comment.updated).toString().slice(4, 16) +
-                    " (" +
-                    new Date(comment.updated).toString().slice(16, 21) +
-                    ")"}
-                  : &nbsp;
-                </Typography>
+                <div className={classes.commentDetails}>
+                  <Typography className={classes.commentsField}>
+                    {new Date(comment.updated).toString().slice(4, 16) +
+                      " (" +
+                      new Date(comment.updated).toString().slice(16, 21) +
+                      ")"}
+                    : &nbsp;
+                  </Typography>
+                  <Typography className={classes.commentUser}>
+                    [{comment.changedBy}]
+                  </Typography>
+                </div>
                 <Typography className={classes.commentList}>
                   {comment.comment}
                 </Typography>

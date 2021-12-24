@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    // width: "100%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   filters: {
     display: "flex",
     flexDirection: "row",
-    width: "60%",
+    // width: "60%",
     justifyContent: "space-around",
     alignItems: "center",
     fontFamily: "poppins",
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.between("xs", "md")]: {
       width: "80%",
       margin: "5%",
+      flexDirection: "column",
     },
   },
 }));

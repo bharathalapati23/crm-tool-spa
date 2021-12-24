@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    margin: "auto 15px 15px 15px",
   },
 }));
 
