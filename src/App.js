@@ -5,11 +5,14 @@ import NavBar from "./components/NavBar/NavBar";
 import NewEnquiryPage from "./components/NewEnquiryPage/NewEnquiryPage";
 import MoreInfoPage from "./components/MoreInfoPage/MoreInfoPage";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
 function App() {
-  const [userName, setUserName] = React.useState("A");
+  if (localStorage.getItem("user") === null) {
+    localStorage.setItem("user", "Aditya");
+  }
+  const [userName, setUserName] = React.useState(localStorage.getItem("user"));
 
   const changeUserName = (e) => {
+    localStorage.setItem("user", e.target.value);
     setUserName(e.target.value);
   };
 

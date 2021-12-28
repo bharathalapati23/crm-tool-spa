@@ -13,6 +13,7 @@ import { useHistory } from "react-router-dom";
 import { IconButton } from "@material-ui/core";
 import Filters from "./Filters/Filters";
 import SearchIcon from "@mui/icons-material/Search";
+import Loading from "../../Loading";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,7 +70,14 @@ const EnquiryTable = ({ enquiries }) => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    setFilteredEnquiries(enquiries);
+    const sortedEnquiries = enquiries
+      .slice()
+      .sort(
+        (a, b) =>
+          new Date(b.comment[b.comment.length - 1].updated) -
+          new Date(a.comment[a.comment.length - 1].updated)
+      );
+    setFilteredEnquiries(sortedEnquiries);
   }, [enquiries]);
 
   const handleSearch = () => {
@@ -171,78 +179,16 @@ const EnquiryTable = ({ enquiries }) => {
               <TableCell className={classes.columnHead} align="center">
                 Source
               </TableCell>
-              <TableCell className={classes.columnHead}>Last Updated</TableCell>
+              <TableCell className={classes.columnHead} align="center">
+                Last Updated
+              </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {status === "" && assigned === ""
-              ? filteredEnquiries.map((row, index) => (
-                  <TableRow
-                    key={row.name + index}
-                    onClick={(e) => navigateToMoreInfo(e, row)}
-                  >
-                    <TableCell align="center">
-                      <IconButton>
-                        <ArrowBackIosIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: "15px",
-                      }}
-                      align="center"
-                      component="th"
-                      scope="row"
-                    >
-                      {row.name}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: "15px",
-                      }}
-                      align="center"
-                    >
-                      {row.assignedTo}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: "15px",
-                      }}
-                      align="center"
-                    >
-                      {row.status}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: "15px",
-                      }}
-                      align="center"
-                    >
-                      {row.source}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontSize: "15px",
-                      }}
-                      align="center"
-                    >
-                      {new Date(row.comment[row.comment.length - 1].updated)
-                        .toString()
-                        .slice(4, 16) +
-                        " (" +
-                        new Date(row.comment[row.comment.length - 1].updated)
-                          .toString()
-                          .slice(16, 21) +
-                        ")"}
-                    </TableCell>
-                  </TableRow>
-                ))
-              : filteredEnquiries
-                  .filter(
-                    (row) =>
-                      row.status === status || row.assignedTo === assigned
-                  )
-                  .map((row, index) => (
+          {enquiries.length === 0 && <Loading />}
+          {enquiries.length !== 0 && (
+            <TableBody>
+              {status === "" && assigned === ""
+                ? filteredEnquiries.map((row, index) => (
                     <TableRow
                       key={row.name + index}
                       onClick={(e) => navigateToMoreInfo(e, row)}
@@ -261,6 +207,14 @@ const EnquiryTable = ({ enquiries }) => {
                         scope="row"
                       >
                         {row.name}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "15px",
+                        }}
+                        align="center"
+                      >
+                        {row.assignedTo}
                       </TableCell>
                       <TableCell
                         style={{
@@ -294,8 +248,69 @@ const EnquiryTable = ({ enquiries }) => {
                           ")"}
                       </TableCell>
                     </TableRow>
-                  ))}
-          </TableBody>
+                  ))
+                : filteredEnquiries
+                    .filter(
+                      (row) =>
+                        row.status === status || row.assignedTo === assigned
+                    )
+                    .map((row, index) => (
+                      <TableRow
+                        key={row.name + index}
+                        onClick={(e) => navigateToMoreInfo(e, row)}
+                      >
+                        <TableCell align="center">
+                          <IconButton>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "15px",
+                          }}
+                          align="center"
+                          component="th"
+                          scope="row"
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "15px",
+                          }}
+                          align="center"
+                        >
+                          {row.status}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "15px",
+                          }}
+                          align="center"
+                        >
+                          {row.source}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "15px",
+                          }}
+                          align="center"
+                        >
+                          {new Date(row.comment[row.comment.length - 1].updated)
+                            .toString()
+                            .slice(4, 16) +
+                            " (" +
+                            new Date(
+                              row.comment[row.comment.length - 1].updated
+                            )
+                              .toString()
+                              .slice(16, 21) +
+                            ")"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
     </div>

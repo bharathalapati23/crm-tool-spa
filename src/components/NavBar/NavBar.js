@@ -98,11 +98,10 @@ function NavBar({ userName, changeUserName }) {
                   value={userName}
                   onChange={changeUserName}
                 >
-                  <MenuItem value={"A"}>&nbsp; A</MenuItem>
-                  <MenuItem value={"B"}>&nbsp; B</MenuItem>
-                  <MenuItem value={"C"}>&nbsp; C</MenuItem>
-                  <MenuItem value={"D"}>&nbsp; D</MenuItem>
-                  <MenuItem value={"E"}>&nbsp; E</MenuItem>
+                  <MenuItem value={"Aditya"}>&nbsp; Aditya</MenuItem>
+                  <MenuItem value={"Bharath"}>&nbsp; Bharath</MenuItem>
+                  <MenuItem value={"Sampat"}>&nbsp; Sampat</MenuItem>
+                  <MenuItem value={"Thomson"}>&nbsp; Thomson</MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -136,11 +135,10 @@ function NavBar({ userName, changeUserName }) {
                     value={userName}
                     onChange={changeUserName}
                   >
-                    <MenuItem value={"A"}>&nbsp; A</MenuItem>
-                    <MenuItem value={"B"}>&nbsp; B</MenuItem>
-                    <MenuItem value={"C"}>&nbsp; C</MenuItem>
-                    <MenuItem value={"D"}>&nbsp; D</MenuItem>
-                    <MenuItem value={"E"}>&nbsp; E</MenuItem>
+                    <MenuItem value={"Aditya"}>&nbsp; Aditya</MenuItem>
+                    <MenuItem value={"Bharath"}>&nbsp; Bharath</MenuItem>
+                    <MenuItem value={"Sampat"}>&nbsp; Sampat</MenuItem>
+                    <MenuItem value={"Thomson"}>&nbsp; Thomson</MenuItem>
                   </Select>
                 </FormControl>
               </Menu>
