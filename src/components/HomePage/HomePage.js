@@ -24,7 +24,6 @@ const HomePage = () => {
   const [enquiries, setEnquiries] = React.useState([]);
   React.useEffect(() => {
     api.getEnquiries().then((result) => {
-      console.log(result);
       setEnquiries(result.data);
     });
   }, []);

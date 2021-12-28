@@ -1,13 +1,18 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import {
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  Button,
+} from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,15 +22,28 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
+  navbar: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
   },
+  userDropDown: {
+    width: "140px",
+    backgroundColor: "#f7f7ff",
+    borderRadius: "5px",
+    color: "white",
+  },
 }));
 
-function NavBar() {
+function NavBar({ userName, changeUserName }) {
   const classes = useStyles();
   const isMobile = useMediaQuery("(max-width:600px)");
   let history = useHistory();
@@ -59,14 +77,34 @@ function NavBar() {
       <AppBar position="absolute" className={classes.appBar}>
         <Toolbar>
           {!isMobile && (
-            <>
-              <Button color="inherit" onClick={navigateToHome}>
-                Home
-              </Button>
-              <Button color="inherit" onClick={navigateToNewEnquiry}>
-                New Enquiry
-              </Button>
-            </>
+            <div className={classes.navbar}>
+              <div className={classes.navLeft}>
+                <Button color="inherit" onClick={navigateToHome}>
+                  Home
+                </Button>
+                <Button color="inherit" onClick={navigateToNewEnquiry}>
+                  New Enquiry
+                </Button>
+              </div>
+              <FormControl
+                variant="filled"
+                sx={{ minWidth: 200 }}
+                className={classes.userDropDown}
+              >
+                <InputLabel>User</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={userName}
+                  onChange={changeUserName}
+                >
+                  <MenuItem value={"Aditya"}>&nbsp; Aditya</MenuItem>
+                  <MenuItem value={"Bharath"}>&nbsp; Bharath</MenuItem>
+                  <MenuItem value={"Sampat"}>&nbsp; Sampat</MenuItem>
+                  <MenuItem value={"Thomson"}>&nbsp; Thomson</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
           )}
           {isMobile && (
             <IconButton
@@ -85,6 +123,24 @@ function NavBar() {
               >
                 <MenuItem onClick={navigateToHome}>Home</MenuItem>
                 <MenuItem onClick={navigateToNewEnquiry}>New Enquiry</MenuItem>
+                <FormControl
+                  variant="filled"
+                  sx={{ minWidth: 200 }}
+                  className={classes.userDropDown}
+                >
+                  <InputLabel>User</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={userName}
+                    onChange={changeUserName}
+                  >
+                    <MenuItem value={"Aditya"}>&nbsp; Aditya</MenuItem>
+                    <MenuItem value={"Bharath"}>&nbsp; Bharath</MenuItem>
+                    <MenuItem value={"Sampat"}>&nbsp; Sampat</MenuItem>
+                    <MenuItem value={"Thomson"}>&nbsp; Thomson</MenuItem>
+                  </Select>
+                </FormControl>
               </Menu>
             </IconButton>
           )}

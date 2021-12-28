@@ -1,4 +1,3 @@
-import { useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -12,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    margin: "auto 15px 15px 15px",
   },
 }));
 export default function ByAssigned({ assigned, handleAssignedChange }) {

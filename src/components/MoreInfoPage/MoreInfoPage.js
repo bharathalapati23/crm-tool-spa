@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation, useHistory } from "react-router-dom";
 import {
@@ -10,8 +10,13 @@ import {
   InputLabel,
   Button,
 } from "@material-ui/core";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import AttachmentIcon from "@mui/icons-material/Attachment";
 import * as api from "../../api";
 import PreferencesComponent from "./PreferencesComponent";
+import { app } from "../../base";
+
+const db = app.firestore();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,18 +43,72 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "1vh",
     marginBottom: "1vh",
   },
+  upload: {
+    marginTop: "1vh",
+  },
+  uploadRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    margin: "10px 0 13px 0",
+  },
+  uploadInput: {
+    padding: "5px 10px",
+  },
+  submitButton: {
+    fontSize: "13px",
+    fontWeight: "bold",
+    borderRadius: "20px",
+    padding: "3px 10px",
+    letterSpacing: "1px",
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "10px",
+    },
+  },
+  filesItem: {
+    listStyleType: "none",
+    marginBottom: "5px",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "13px",
+    },
+  },
+  file: {
+    textDecoration: "none",
+    marginLeft: "10px",
+    fontWeight: "600",
+  },
   comments: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    borderTop: "1.5px solid #403d39",
+    margin: "5px 0px",
+  },
+  commentDetails: {
+    display: "flex",
+    flexDirection: "column",
+    width: "30%",
   },
   commentsField: {
     marginTop: "1vh",
-    marginBottom: "1vh",
-    width: "30%",
+    width: "100%",
     [theme.breakpoints.between("xs", "sm")]: {
       fontSize: "14px",
     },
+  },
+  commentUser: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    alignItems: "center",
+    fontSize: "14px",
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "12px",
+    },
+    opacity: "0.7",
   },
   commentList: {
     fontSize: "18px",
@@ -75,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MoreInfoPage = () => {
+const MoreInfoPage = ({ userName }) => {
   const classes = useStyles();
   const location = useLocation();
   const history = useHistory();
@@ -101,6 +160,8 @@ const MoreInfoPage = () => {
     ["Closed", "Collecting Feedback"],
     ["Dropped", "Collecting Feedback"],
   ]);
+  const queryParams = new URLSearchParams(window.location.search);
+  const id = queryParams.get("search-id");
 
   React.useEffect(() => {
     setBudgetState(location.state.enquiry.budget);
@@ -127,13 +188,11 @@ const MoreInfoPage = () => {
     const {
       target: { value },
     } = e;
-    console.log(value);
     setLocationState(value);
   };
 
   const changeAssigned = (e) => {
     setAssignedState(e.target.value);
-    console.log(assignedState + " " + location.state.enquiry.assignedTo);
     if (inAssigned !== e.target.value) {
       setAssignedComment(`Assigned [ ${inAssigned} -> ${e.target.value} ]`);
       setNewComment(
@@ -200,6 +259,7 @@ const MoreInfoPage = () => {
       subStatus: subStatusState,
       assignedTo: assignedState,
       id: location.state.enquiry._id,
+      changedBy: userName,
     };
 
     api.addComment(commentBody).then(() => {
@@ -232,7 +292,57 @@ const MoreInfoPage = () => {
     budgetState === location.state.enquiry.budget &&
     configState === location.state.enquiry.config &&
     !newComment.length;
-  console.log(disableSaveButton);
+
+  const [fileUrl, setFileUrl] = React.useState(null);
+  const [userData, setUserData] = React.useState([]);
+  const [fileName, setFileName] = React.useState("");
+
+  const onFileChange = async (e) => {
+    const file = e.target.files[0];
+    setFileName(file.name);
+    const storageRef = app.storage().ref();
+    const fileRef = storageRef.child(file.name);
+    await fileRef.put(file);
+    setFileUrl(await fileRef.getDownloadURL());
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const username = id;
+    const name = fileName;
+    if (!username || !fileUrl) {
+      return;
+    }
+    await db
+      .collection("users")
+      .doc(username)
+      .collection("files")
+      .doc(name)
+      .set({ url: fileUrl, name: name })
+      .then(() => {
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    const username = id;
+    const fetchuserData = async () => {
+      const userDataCollection = await db
+        .collection("users")
+        .doc(username)
+        .collection("files")
+        .get();
+      setUserData(
+        userDataCollection.docs.map((doc) => {
+          return doc.data();
+        })
+      );
+    };
+    fetchuserData();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -397,6 +507,46 @@ const MoreInfoPage = () => {
             marginTop: "4vh",
           }}
         >
+          FILES
+        </Typography>
+        <div className={classes.upload}>
+          <form onSubmit={onSubmit} className={classes.uploadRow}>
+            <FileUploadIcon />
+            <input
+              type="file"
+              onChange={onFileChange}
+              className={classes.uploadInput}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.submitButton}
+              type="submit"
+            >
+              Upload
+            </Button>
+          </form>
+          <div>
+            {userData.map((user) => {
+              return (
+                <li className={classes.filesItem}>
+                  <AttachmentIcon />
+                  <a href={user.url} target="blank" className={classes.file}>
+                    {user.name}
+                  </a>
+                </li>
+              );
+            })}
+          </div>
+        </div>
+        <Typography
+          variant="h7"
+          style={{
+            fontWeight: "bolder",
+            marginBottom: "1vh",
+            marginTop: "4vh",
+          }}
+        >
           COMMENTS
         </Typography>
         {location.state.enquiry.comment
@@ -405,13 +555,18 @@ const MoreInfoPage = () => {
           .map((comment, i) => {
             return (
               <div className={classes.comments}>
-                <Typography className={classes.commentsField}>
-                  {new Date(comment.updated).toString().slice(4, 16) +
-                    " (" +
-                    new Date(comment.updated).toString().slice(16, 21) +
-                    ")"}
-                  : &nbsp;
-                </Typography>
+                <div className={classes.commentDetails}>
+                  <Typography className={classes.commentsField}>
+                    {new Date(comment.updated).toString().slice(4, 16) +
+                      " (" +
+                      new Date(comment.updated).toString().slice(16, 21) +
+                      ")"}
+                    : &nbsp;
+                  </Typography>
+                  <Typography className={classes.commentUser}>
+                    [{comment.changedBy}]
+                  </Typography>
+                </div>
                 <Typography className={classes.commentList}>
                   {comment.comment}
                 </Typography>
